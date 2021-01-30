@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Job Applicants Report</title>
+    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.9.1/build/cssreset/cssreset-min.css">
+    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.9.1/build/cssbase/cssbase-min.css">
+    <style type="text/css">
+      #page {
+        width: 1200px;
+        margin: 30px auto;
+      }
+      .job-applicants {
+        width: 100%;
+      }
+      .job-name {
+        text-align: center;
+      }
+      .applicant-name {
+        width: 150px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="page">
+      <table class="job-applicants">
+        <thead>
+          <tr>
+            <th>Job</th>
+            <th>Applicant Name</th>
+            <th>Email Address</th>
+            <th>Website</th>
+            <th>Skills</th>
+            <th>Cover Letter Paragraph</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {{ range $job := .Jobs }}
+          <!-- {{ $job.Name }} -->
+            {{ range $idx, $app := $job.Applicants }}
+            <tr>
+              {{ if eq $idx 0 }}
+              <td rowspan="{{ $job.TotalSkillCount }}" class="job-name">{{ $job.Name }}</td>
+              {{ end }}
+              <td rowspan="{{ len $app.Skills }}" class="applicant-name">{{ $app.Name }}</td>
+              <td rowspan="{{ len $app.Skills }}"><a href="{{ $app.Email }}">{{ $app.Email }}</a></td>
+              <td rowspan="{{ len $app.Skills }}"><a href="http://{{ $app.Website }}/">{{ $app.Website }}</a></td>
+              <td>{{ (index $app.Skills 0).Name }}</td>
+              <td rowspan="{{ len $app.Skills }}">{{ $app.CoverLetter }}</td>
+            </tr>
+            {{ range $index, $skill := $app.Skills }}
+            {{ if gt $index 0 }}
+            <tr>
+              <td>{{ $skill.Name }}</td>
+            </tr>
+          {{ end }}
+          {{ end }}
+          {{ end }}
+          <!-- /{{ $job.Name }} -->
+          {{ end }}
+
+        </tbody>
+
+        <tfoot>
+          <tr>
+            <td colspan="6">{{ .ApplicantTotal}} Applicants, {{ .UniqueSkillTotal }} Unique Skills</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </body>
+</html>
+
